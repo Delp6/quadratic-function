@@ -1,16 +1,30 @@
-document.getElementById("button").addEventListener("click", calcPolynomial)
+document.getElementById("button").addEventListener("click", calcFunction)
 
-function calcPolynomial() {
+
+function calcFunction() {
     let equation = document.getElementById("equation").value.toString().replace(/\s+/g, "")
 
-    if (equation.includes("=0")) {
-        equation = equation.split("=")[0];
-    } else if (equation.includes("=") && isNaN(parseInt(equation.split("=")[1]))) {
-        /*TODO SHOW WRONG INPUT INFO*/
-        return;
+    if(validateInput(equation)) {
+        let array = equation.split("+").join(",").split("-").join(",");
+
     }
-    console.log(equation)
-   /* let array = [];
-    equation = equation.split("+").join(",").split("-").join(",");
-    console.log(equation);*/
+}
+
+function validateInput(input) {
+    if (input.includes("=0")) {
+        input = input.split("=")[0];
+    } else if (input.includes("=") && isNaN(parseInt(input.split("=")[1]))) {
+        showWrongInput();
+        return false;
+    }
+    if (!(input.includes("^") && input.charAt(input.indexOf("^") - 1) === "x"
+        && input.charAt(input.indexOf("^") + 1).match(/^[1-9][0-9]*$/))) {
+        showWrongInput();
+        return false;
+    }
+    return true;
+}
+function showWrongInput() {
+    console.log("wrong input")
+    /*TODO SHOW WRONG INPUT ALERT*/
 }
