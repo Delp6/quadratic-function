@@ -6,6 +6,8 @@ document.getElementById("button").addEventListener("click", calcEquation)
 
 function calcEquation() {
     let equation = document.getElementById("equation").value.toString().replace(/\s+/g, "")
+    let x1 = document.getElementById("x1");
+    let x2 = document.getElementById("x2");
 
     if (validateData(equation)) {
         equation = equation.replace("=", ",+").replace(/-/g, ",-").replace(/\+/g, ",+").replace(",,+", ",")
@@ -25,6 +27,8 @@ function calcEquation() {
             p = -b / (2 * a)
             q = -delta / (4 * a)
             createChart(results, p, q, a)
+            x1.innerHTML  = "X: " + results[0];
+            x1.scrollIntoView({behavior: "smooth"});
         } else {
             let deltaSquareRoot = Math.sqrt(delta)
             results.push((-b + deltaSquareRoot) / (2 * a))
@@ -32,6 +36,9 @@ function calcEquation() {
             p = -b / (2 * a)
             q = -delta / (4 * a)
             createChart(results, p, q, a)
+            x1.innerHTML  = "X1: " + results[0];
+            x2.innerHTML  = "X2: " + results[1];
+            x1.scrollIntoView({behavior: "smooth"});
         }
     }
 }
@@ -77,7 +84,6 @@ function addSameElements(array) {
     returnValue.push(tempArray[0].toString().concat("x^2"))
     returnValue.push(tempArray[1].toString().concat("x"))
     returnValue.push(tempArray[2].toString())
-    console.log(returnValue[2])
     return returnValue
 }
 
