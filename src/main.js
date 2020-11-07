@@ -8,7 +8,7 @@ function calcEquation() {
     let equation = document.getElementById("equation").value.toString().replace(/\s+/g, "")
 
     if (validateData(equation)) {
-        equation = equation.replace(/-/g, ",-").replace(/\+/g, ",+")
+        equation = equation.replace("=", ",+").replace(/-/g, ",-").replace(/\+/g, ",+").replace(",,+", ",")
         let array = addSameElements(equation.split(",").filter(item => item !== ""))
 
         let a = array[0].replace("x^2", "")
@@ -16,22 +16,22 @@ function calcEquation() {
         let c = array[2]
         let delta = calcDelta(a, b, c)
         let results = []
-        let p;
-        let q;
+        let p
+        let q
         if (Math.sign(delta) === -1) {
             showDeltaNegative(true)
         } else if (Math.sign(delta) === 0 || -0) {
             results.push(-b / (2 * a))
-            p = -b/(2*a);
-            q = -delta/(4*a);
-            createChart(results, p,q,a)
+            p = -b / (2 * a)
+            q = -delta / (4 * a)
+            createChart(results, p, q, a)
         } else {
             let deltaSquareRoot = Math.sqrt(delta)
             results.push((-b + deltaSquareRoot) / (2 * a))
             results.push((-b - deltaSquareRoot) / (2 * a))
-            p = -b/(2*a);
-            q = -delta/(4*a);
-            createChart(results, p,q,a)
+            p = -b / (2 * a)
+            q = -delta / (4 * a)
+            createChart(results, p, q, a)
         }
     }
 }
@@ -77,6 +77,7 @@ function addSameElements(array) {
     returnValue.push(tempArray[0].toString().concat("x^2"))
     returnValue.push(tempArray[1].toString().concat("x"))
     returnValue.push(tempArray[2].toString())
+    console.log(returnValue[2])
     return returnValue
 }
 
@@ -89,20 +90,41 @@ function showDeltaNegative(boolean) {
     /*TODO SHOW DELTA NEGATIVE ALERT*/
 }
 
-function createChart(results, p,q,a) {
+function createChart(results, p, q, a) {
+    let scale = calcChartScale(results)
     let board = JXG.JSXGraph.initBoard('box', {
-        boundingbox: [-10, 10, 10, -10], axis: true, grid: true,
-        highlightStrokeColor: 'yellow'
+        boundingbox: [-scale, scale, scale, -scale], axis: true, grid: true,
     })
-    let x1 = board.create("point", [results[0], 0])
+    board.create("point", [results[0], 0], {
+        fixed: true,
+        name: results.length === 1 ? "x" : results[0] > results[1] ? "x2" : "x1",
+        label: {autoPosition: true}
+    })
     if (results.length > 1) {
-        let x2 = board.create("point", [results[1], 0])
+        board.create("point", [results[1], 0], {
+            fixed: true,
+            name: results[0] > results[1] ? "x1" : "x2",
+            label: {autoPosition: true}
+        })
     }
-    console.log("p:" + p)
-    console.log("q:" + q)
     let theFct = function (x) {
-        return a * (x - p) * (x - p) + q;
+        return a * (x - p) * (x - p) + q
     }
     board.create("functiongraph", [theFct])
+}
+
+function calcChartScale(results) {
+    let value = Math.abs(results[0])
+    if (results.length > 1 && Math.abs(results[1]) > results[0]) {
+        value = Math.abs(results[1])
+    }
+    value = Math.ceil(value / 5) * 5;
+    if (value % 5 === 0 && value !== 5) {
+        value = 2 * value + 5;
+    }
+    if (value === 5) {
+        value -= 2;
+    }
+    return value === 0 || value === -0 ? 5 : value
 }
 
