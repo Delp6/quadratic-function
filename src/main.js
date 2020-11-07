@@ -1,31 +1,38 @@
 document.getElementById("button").addEventListener("click", calcEquation)
 
 /*document.getElementById("equation").onkeypress = function(e) {
-/\+|x|-|=|\^|,|\.|[0-9]/.test(this.value);
-};*/
+/\+|x|-|=|\^|,|\.|[0-9]/.test(this.value)
+}*/
 
 function calcEquation() {
     let equation = document.getElementById("equation").value.toString().replace(/\s+/g, "")
 
     if (validateData(equation)) {
         equation = equation.replace(/-/g, ",-").replace(/\+/g, ",+")
-        let array = addSameElements(equation.split(",").filter(item => item !== ""));
+        let array = addSameElements(equation.split(",").filter(item => item !== ""))
 
         let a = array[0].replace("x^2", "")
         let b = array[1].replace("x", "")
         let c = array[2]
         let delta = calcDelta(a, b, c)
         let results = []
+        let p;
+        let q;
         if (Math.sign(delta) === -1) {
             showDeltaNegative(true)
         } else if (Math.sign(delta) === 0 || -0) {
             results.push(-b / (2 * a))
+            p = -b/(2*a);
+            q = -delta/(4*a);
+            createChart(results, p,q,a)
         } else {
             let deltaSquareRoot = Math.sqrt(delta)
             results.push((-b + deltaSquareRoot) / (2 * a))
             results.push((-b - deltaSquareRoot) / (2 * a))
+            p = -b/(2*a);
+            q = -delta/(4*a);
+            createChart(results, p,q,a)
         }
-        /*TODO SHOW RESULTS*/
     }
 }
 
@@ -50,17 +57,19 @@ function showWrongInput(boolean) {
 }
 
 function addSameElements(array) {
-    let tempArray = [0, 0, 0];
+    let tempArray = [0, 0, 0]
     let returnValue = []
 
     array.forEach(item => {
-        if (!/\d/.test(item)) {
-            item = "1".concat(item)
+        if (item.includes("x^2") && !/\d/.test(item.replace("x^2", "").replace("+", "").replace("-", ""))) {
+            item = item.replace("x^2", "").concat("1".concat(item))
+        } else if (!/\d/.test(item.replace("x", "").replace("+", "").replace("-", ""))) {
+            item = item.replace("x", "").concat("1".concat(item))
         }
         if (item.includes("x^2")) {
-            tempArray[0] += parseFloat(item.replace("x^2", ""));
+            tempArray[0] += parseFloat(item.replace("x^2", ""))
         } else if (item.includes("x")) {
-            tempArray[1] += parseFloat(item.replace("x^2", ""));
+            tempArray[1] += parseFloat(item.replace("x^2", ""))
         } else {
             tempArray[2] += parseFloat(item)
         }
@@ -79,3 +88,21 @@ function showDeltaNegative(boolean) {
     console.log("delta negative")
     /*TODO SHOW DELTA NEGATIVE ALERT*/
 }
+
+function createChart(results, p,q,a) {
+    let board = JXG.JSXGraph.initBoard('box', {
+        boundingbox: [-10, 10, 10, -10], axis: true, grid: true,
+        highlightStrokeColor: 'yellow'
+    })
+    let x1 = board.create("point", [results[0], 0])
+    if (results.length > 1) {
+        let x2 = board.create("point", [results[1], 0])
+    }
+    console.log("p:" + p)
+    console.log("q:" + q)
+    let theFct = function (x) {
+        return a * (x - p) * (x - p) + q;
+    }
+    board.create("functiongraph", [theFct])
+}
+
