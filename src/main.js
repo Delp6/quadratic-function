@@ -1,9 +1,12 @@
 document.getElementById("button").addEventListener("click", calcEquation)
 document.getElementById("reset").addEventListener("click", reset)
 
-/*document.getElementById("equation").onkeypress = function(e) {
-/\+|x|-|=|\^|,|\.|[0-9]/.test(this.value)
-}*/
+document.getElementById("equation").onkeypress = function(e) {
+    if(!allowedKeys.includes(e.key)) {
+        e.preventDefault();
+    }
+}
+let allowedKeys = "x0123456789^+-=*/."
 
 function calcEquation() {
     document.getElementById("alert").innerText = ""
