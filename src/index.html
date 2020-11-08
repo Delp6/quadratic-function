@@ -12,15 +12,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,300&display=swap" rel="stylesheet">
 </head>
 <body>
+<div class="alert" id="alert">
+</div>
 <div class="container">
-    <h2 class="container-title">Quadratic Equation Calculator</h2>
+    <h2 class="container__title">Quadratic Equation Calculator</h2>
     <form class="form">
         <label for="equation">Equation:</label>
         <br/>
-        <input class="form__input" type="text" id="equation">
+        <input class="form__input" type="text" id="equation" placeholder="x^2 + 1x - 2 = 0">
         <br/>
         <button type="button" id="button" class="form__btn-cal">Calculate</button>
-        <button type="button" class="form__btn-reset">Reset</button>
+        <button type="reset" id="reset" class="form__btn-reset">Reset</button>
     </form>
     <div class="container__output">
         <div class="container__output_data">

@@ -1,10 +1,12 @@
 document.getElementById("button").addEventListener("click", calcEquation)
+document.getElementById("reset").addEventListener("click", reset)
 
 /*document.getElementById("equation").onkeypress = function(e) {
 /\+|x|-|=|\^|,|\.|[0-9]/.test(this.value)
 }*/
 
 function calcEquation() {
+    document.getElementById("alert").innerText = ""
     let equation = document.getElementById("equation").value.toString().replace(/\s+/g, "")
     let x1 = document.getElementById("x1");
     let x2 = document.getElementById("x2");
@@ -21,13 +23,13 @@ function calcEquation() {
         let p
         let q
         if (Math.sign(delta) === -1) {
-            showDeltaNegative(true)
+            document.getElementById("alert").innerText = "Delta is negative - no results."
         } else if (Math.sign(delta) === 0 || -0) {
             results.push(-b / (2 * a))
             p = -b / (2 * a)
             q = -delta / (4 * a)
             createChart(results, p, q, a)
-            x1.innerHTML  = "X: " + results[0];
+            x1.innerHTML = "X: " + results[0];
             x1.scrollIntoView({behavior: "smooth"});
         } else {
             let deltaSquareRoot = Math.sqrt(delta)
@@ -36,8 +38,8 @@ function calcEquation() {
             p = -b / (2 * a)
             q = -delta / (4 * a)
             createChart(results, p, q, a)
-            x1.innerHTML  = "X1: " + results[0];
-            x2.innerHTML  = "X2: " + results[1];
+            x1.innerHTML = "X1: " + results[0];
+            x2.innerHTML = "X2: " + results[1];
             x1.scrollIntoView({behavior: "smooth"});
         }
     }
@@ -47,20 +49,15 @@ function validateData(input) {
     if (input.includes("=0")) {
         input = input.split("=")[0]
     } else if (input.includes("=") && isNaN(parseInt(input.split("=")[1]))) {
-        showWrongInput(true)
+        document.getElementById("alert").innerText = "Wrong input."
         return false
     }
     if (!(input.includes("^") && input.charAt(input.indexOf("^") - 1) === "x"
         && input.charAt(input.indexOf("^") + 1).match(/^[1-9][0-9]*$/))) {
-        showWrongInput(true)
+        document.getElementById("alert").innerText = "Wrong input."
         return false
     }
     return true
-}
-
-function showWrongInput(boolean) {
-    console.log("wrong input")
-    /*TODO SHOW WRONG INPUT ALERT*/
 }
 
 function addSameElements(array) {
@@ -89,11 +86,6 @@ function addSameElements(array) {
 
 function calcDelta(a, b, c) {
     return Math.pow(b, 2) - (4 * a * c)
-}
-
-function showDeltaNegative(boolean) {
-    console.log("delta negative")
-    /*TODO SHOW DELTA NEGATIVE ALERT*/
 }
 
 function createChart(results, p, q, a) {
@@ -132,5 +124,12 @@ function calcChartScale(results) {
         value -= 2;
     }
     return value === 0 || value === -0 ? 5 : value
+}
+
+function reset() {
+    document.getElementById("x1").innerHTML = "";
+    document.getElementById("x2").innerHTML = "";
+    document.getElementById("box").innerHTML = "";
+    document.getElementById("alert").innerText = ""
 }
 
