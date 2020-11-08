@@ -19,7 +19,7 @@
 * CSS
 
 ## Setup
-Link to heroku: 
+Link to application: http://quadratic-8.s3-website.eu-central-1.amazonaws.com/
 
 ## Status
 Target acquired, project finished.
